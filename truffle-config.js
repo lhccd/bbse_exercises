@@ -23,6 +23,9 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+require("dotenv").config();
+const HDWalletProvider = require ("@truffle/hdwallet-provider") ;
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -35,6 +38,23 @@ module.exports = {
    */
 
   networks: {
+    development: {
+      host: "127.0.0.1", // Localhost (default: none)
+      port: 7545, // Standard Ethereum port (default: none)
+      network_id: "*", // Any network (default: none)
+    }, 
+    rinkeby: {
+      provier: function () {
+        return new HDWalletProvider({
+          privateKeys: [process.env.PRIVATE_KEY_1],
+          provierOrUrl: 'https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}',
+          numberOfAddresses: 1, 
+        })
+      }, 
+      gas: 500000, 
+      gasPrice: 5000000000, // 5 gwei
+      network_id: 4
+    }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache, geth, or parity) in a separate terminal
@@ -84,7 +104,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.8.15",      // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.8.11",      // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {
